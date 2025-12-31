@@ -35,7 +35,7 @@ end
 function M.send_buffer_with_filepath(tool_name)
   local filepath = vim.fn.expand('%:p')
   local content = utils.get_buffer_content()
-  local text = string.format('ファイル: %s\n\n```\n%s\n```', filepath, content)
+  local text = string.format('File: %s\n\n```\n%s\n```', filepath, content)
   sender.send_to_ai(text, tool_name)
 end
 

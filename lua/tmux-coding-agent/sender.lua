@@ -26,12 +26,12 @@ function M.send_text_to_pane(pane_idx, text, tool_name)
 
   vim.fn.system(string.format('tmux send-keys -t %s Enter', pane_idx))
 
-  notify(string.format('%s (pane %s) にテキストを送信しました', tool_name, pane_idx))
+  notify(string.format('Sent text to %s (pane %s)', tool_name, pane_idx))
 end
 
 --- Select target pane from multiple AI panes
 local function select_and_send(ai_panes, text, tool_name)
-  -- 特定のツール名が指定されている場合
+  -- If specific tool name is specified
   if tool_name then
     for _, pane in ipairs(ai_panes) do
       if pane.name:lower():match(tool_name:lower()) or pane.command:lower():match(tool_name:lower()) then
@@ -39,24 +39,24 @@ local function select_and_send(ai_panes, text, tool_name)
         return
       end
     end
-    notify(string.format('%s ペインが見つかりません', tool_name), vim.log.levels.WARN)
+    notify(string.format('%s pane not found', tool_name), vim.log.levels.WARN)
     return
   end
 
-  -- 1つだけの場合は自動選択
+  -- Auto-select if only one pane
   if #ai_panes == 1 then
     M.send_text_to_pane(ai_panes[1].index, text, ai_panes[1].name)
     return
   end
 
-  -- 複数のAIツールペインがある場合は選択
+  -- Select from multiple AI tool panes
   local choices = {}
   for i, pane in ipairs(ai_panes) do
     table.insert(choices, string.format('%d. %s (pane %s)', i, pane.name, pane.index))
   end
 
   vim.ui.select(choices, {
-    prompt = '送信先のAIツールを選択してください:',
+    prompt = 'Select AI tool to send to:',
   }, function(choice, idx)
     if idx then
       M.send_text_to_pane(ai_panes[idx].index, text, ai_panes[idx].name)
@@ -69,7 +69,7 @@ end
 --- @param tool_name string|nil Optional specific tool name
 function M.send_to_ai(text, tool_name)
   if not text or text == '' then
-    notify('送信するテキストが空です', vim.log.levels.WARN)
+    notify('Text to send is empty', vim.log.levels.WARN)
     return
   end
 
@@ -79,8 +79,8 @@ function M.send_to_ai(text, tool_name)
     return
   end
 
-  -- デバッグ情報を表示
-  local debug_msg = string.format('検出されたAIツール: %d個', #ai_panes)
+  -- Display debug information
+  local debug_msg = string.format('Detected AI tools: %d', #ai_panes)
   for i, pane in ipairs(ai_panes) do
     debug_msg = debug_msg .. string.format('\n  %d. %s (pane %s)', i, pane.name, pane.index)
   end

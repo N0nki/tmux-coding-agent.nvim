@@ -10,7 +10,7 @@ function M.get_visual_selection()
   local end_pos = vim.fn.getpos("'>")
 
   if start_pos[2] == 0 or end_pos[2] == 0 then
-    vim.notify('ビジュアル選択範囲が取得できませんでした', vim.log.levels.WARN)
+    vim.notify('Failed to get visual selection', vim.log.levels.WARN)
     return nil
   end
 
@@ -23,7 +23,7 @@ function M.get_visual_selection()
   local lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col, {})
 
   if not lines or #lines == 0 then
-    vim.notify('選択範囲が空です', vim.log.levels.WARN)
+    vim.notify('Selection is empty', vim.log.levels.WARN)
     return nil
   end
 

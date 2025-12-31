@@ -1,25 +1,25 @@
 # tmux-coding-agent.nvim
 
-Neovim から tmux ペインで動作する AI コーディングアシスタント(Claude Code, Codex, Gemini など)にテキストを送信するプラグイン。
+A Neovim plugin for sending text to AI coding assistants (Claude Code, Codex, Gemini, etc.) running in tmux panes.
 
-## 機能
+## Features
 
-- **AI ツール自動検出**: tmux ペインで実行中のプロセスから AI ツールを自動検出
-- **柔軟な送信モード**:
-  - ビジュアル選択範囲
-  - バッファ全体
-  - ファイルパス付きバッファ
-  - カスタムプロンプト付き送信
-- **マルチペイン対応**: 複数の AI ツールペインがある場合は選択可能
-- **カスタマイズ可能**: setup() で AI ツールパターンを追加・変更可能
+- **Auto-detect AI tools**: Automatically detect AI tools in tmux panes via process inspection
+- **Flexible send modes**:
+  - Visual selection
+  - Entire buffer
+  - Buffer with filepath
+  - Custom prompt with code
+- **Multi-pane support**: Select from multiple AI tool panes when available
+- **Customizable**: Add or modify AI tool patterns via setup()
 
-## 必要要件
+## Requirements
 
 - Neovim 0.7+
 - tmux
-- AI ツールが別の tmux ペインで実行中であること
+- AI tool running in a separate tmux pane
 
-## インストール
+## Installation
 
 ### lazy.nvim
 
@@ -38,9 +38,9 @@ Neovim から tmux ペインで動作する AI コーディングアシスタン
 }
 ```
 
-## 設定
+## Configuration
 
-### デフォルト設定
+### Default settings
 
 ```lua
 require('tmux-coding-agent').setup({
@@ -56,7 +56,7 @@ require('tmux-coding-agent').setup({
 })
 ```
 
-### カスタム AI ツールの追加
+### Adding custom AI tools
 
 ```lua
 require('tmux-coding-agent').setup({
@@ -64,108 +64,108 @@ require('tmux-coding-agent').setup({
     { name = 'Claude Code', pattern = 'claude' },
     { name = 'Codex', pattern = 'codex' },
     { name = 'Gemini', pattern = 'gemini' },
-    { name = 'Aider', pattern = 'aider' },  -- カスタムツール追加
-    { name = 'Custom AI', pattern = 'my%-ai' },  -- Lua パターン使用可能
+    { name = 'Aider', pattern = 'aider' },  -- Add custom tool
+    { name = 'Custom AI', pattern = 'my%-ai' },  -- Lua pattern supported
   },
 })
 ```
 
-## 使用方法
+## Usage
 
-### ユーザーコマンド
+### User commands
 
-- `:TmuxSendToAI [tool_name]` - バッファ全体を送信
-- `:TmuxSendVisualToAI [tool_name]` - ビジュアル選択範囲を送信
-- `:TmuxSendFileToAI [tool_name]` - ファイルパス付きでバッファを送信
+- `:TmuxSendToAI [tool_name]` - Send entire buffer
+- `:TmuxSendVisualToAI [tool_name]` - Send visual selection
+- `:TmuxSendFileToAI [tool_name]` - Send buffer with filepath
 
-`tool_name` はオプションです。指定すると特定の AI ツールにのみ送信します。
+`tool_name` is optional. If specified, sends only to the specific AI tool.
 
 ### Lua API
 
 ```lua
 local tmux_ai = require('tmux-coding-agent')
 
--- バッファ全体を送信
+-- Send entire buffer
 tmux_ai.send_buffer_to_ai()
 
--- 特定のツールに送信
+-- Send to specific tool
 tmux_ai.send_buffer_to_ai('claude')
 
--- ビジュアル選択範囲を送信
+-- Send visual selection
 tmux_ai.send_visual_to_ai()
 
--- ファイルパス付きで送信
+-- Send with filepath
 tmux_ai.send_buffer_with_filepath()
 
--- カスタムプロンプト付きで送信(関数を返す)
-local send_with_review = tmux_ai.send_with_prompt('このコードをレビューしてください')
-send_with_review()  -- 実行時にバッファを送信
+-- Send with custom prompt (returns a function)
+local send_with_review = tmux_ai.send_with_prompt('Please review this code')
+send_with_review()  -- Execute to send buffer
 
--- ビジュアル選択にプロンプト付きで送信
-local send_visual_refactor = tmux_ai.send_visual_with_prompt('このコードをリファクタリングしてください')
+-- Send visual selection with prompt
+local send_visual_refactor = tmux_ai.send_visual_with_prompt('Please refactor this code')
 send_visual_refactor()
 ```
 
-### キーマップ例
+### Keymap examples
 
 ```lua
 local tmux_ai = require('tmux-coding-agent')
 
--- バッファ全体を送信
+-- Send entire buffer
 vim.keymap.set('n', '<leader>aa', tmux_ai.send_buffer_to_ai, { desc = 'Send buffer to AI' })
 
--- ビジュアル選択を送信
+-- Send visual selection
 vim.keymap.set('x', '<leader>aa', tmux_ai.send_visual_to_ai, { desc = 'Send visual to AI' })
 
--- ファイルパス付きで送信
+-- Send with filepath
 vim.keymap.set('n', '<leader>af', tmux_ai.send_buffer_with_filepath, { desc = 'Send file to AI' })
 
--- カスタムプロンプト付き送信
-vim.keymap.set('n', '<leader>ar', tmux_ai.send_with_prompt('このコードをレビューしてください'),
+-- Send with custom prompts
+vim.keymap.set('n', '<leader>ar', tmux_ai.send_with_prompt('Please review this code'),
   { desc = 'Review code' })
-vim.keymap.set('n', '<leader>ae', tmux_ai.send_with_prompt('このコードを説明してください'),
+vim.keymap.set('n', '<leader>ae', tmux_ai.send_with_prompt('Please explain this code'),
   { desc = 'Explain code' })
-vim.keymap.set('x', '<leader>ar', tmux_ai.send_visual_with_prompt('このコードをリファクタリングしてください'),
+vim.keymap.set('x', '<leader>ar', tmux_ai.send_visual_with_prompt('Please refactor this code'),
   { desc = 'Refactor code' })
 ```
 
-## 動作の仕組み
+## How it works
 
-1. **プロセス検出**: `ps` コマンドで各 tmux ペインの TTY に紐づくプロセスを取得
-2. **パターンマッチング**: コマンドラインが設定された AI ツールパターンにマッチするか確認
-3. **ペイン選択**:
-   - 1つの AI ツールペインのみ → 自動選択
-   - 複数の AI ツールペイン → `vim.ui.select` で選択
-   - 特定のツール名指定 → そのツールにのみ送信
-4. **テキスト送信**: `tmux send-keys -l` でテキストを送信し、Enter を実行
+1. **Process detection**: Uses `ps` command to get processes for each tmux pane's TTY
+2. **Pattern matching**: Checks if command line matches configured AI tool patterns
+3. **Pane selection**:
+   - Single AI tool pane → Auto-select
+   - Multiple AI tool panes → `vim.ui.select` for selection
+   - Specific tool name → Send only to that tool
+4. **Text sending**: Sends text via `tmux send-keys -l` and executes Enter
 
-## トラブルシューティング
+## Troubleshooting
 
-### AI ツールペインが見つからない
+### No AI tool panes found
 
-**症状**: `AIツールペインが見つかりません (claude, codex, gemini)` というエラー
+**Symptom**: Error message `No AI tool panes found (claude, codex, gemini)`
 
-**原因**:
-- tmux ペインで AI ツールが起動していない
-- AI ツールのプロセス名がパターンにマッチしない
+**Causes**:
+- AI tool is not running in a tmux pane
+- AI tool's process name doesn't match patterns
 
-**対策**:
-1. AI ツールが別の tmux ペインで実行中か確認
-2. `ps aux | grep claude` などでプロセス名を確認
-3. setup() でカスタムパターンを追加
+**Solutions**:
+1. Verify AI tool is running in a separate tmux pane
+2. Check process name with `ps aux | grep claude`
+3. Add custom pattern in setup()
 
-### tmux 環境外で使用している
+### Not running inside tmux
 
-**症状**: `tmux環境外では使用できません` というエラー
+**Symptom**: Error message `Not running inside tmux`
 
-**対策**: tmux セッション内で Neovim を起動してください
+**Solution**: Launch Neovim inside a tmux session
 
-### 選択範囲が空
+### Selection is empty
 
-**症状**: `選択範囲が空です` というエラー
+**Symptom**: Error message `Selection is empty`
 
-**対策**: ビジュアルモードで範囲を選択してから実行してください
+**Solution**: Select text in visual mode before executing
 
-## ライセンス
+## License
 
 MIT License - Copyright (c) 2025 n0nki

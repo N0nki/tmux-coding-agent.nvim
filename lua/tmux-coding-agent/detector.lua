@@ -12,7 +12,7 @@ function M.get_pane_command(pane_tty)
   local ps_output = vim.fn.system(string.format('ps -t %s -o command=', pane_tty))
 
   for line in ps_output:gmatch('[^\r\n]+') do
-    -- シェル(zsh, bash, sh)以外で、AIツールパターンにマッチするものを返す
+    -- Return commands other than shells (zsh, bash, sh)
     if not line:match('^%-?[zb]?sh') and not line:match('^npm') and not line:match('^ps ') then
       return line
     end
@@ -44,7 +44,7 @@ end
 --- @return string|nil Error message if failed
 function M.get_ai_panes()
   if vim.fn.getenv('TMUX') == vim.NIL then
-    return nil, 'tmux環境外では使用できません'
+    return nil, 'Not running inside tmux'
   end
 
   local panes = vim.fn.system("tmux list-panes -F '#{pane_index}:#{pane_tty}'")
@@ -73,7 +73,7 @@ function M.get_ai_panes()
     for _, tool in ipairs(tools) do
       table.insert(tool_names, tool.pattern)
     end
-    return nil, string.format('AIツールペインが見つかりません (%s)', table.concat(tool_names, ', '))
+    return nil, string.format('No AI tool panes found (%s)', table.concat(tool_names, ', '))
   end
 
   return ai_panes, nil
