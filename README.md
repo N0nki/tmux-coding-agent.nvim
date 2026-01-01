@@ -146,10 +146,12 @@ vim.keymap.set('x', '<leader>ar', tmux_ai.send_visual_with_prompt('Please refact
 **Symptom**: Error message `No AI tool panes found (claude, codex, gemini)`
 
 **Causes**:
+
 - AI tool is not running in a tmux pane
 - AI tool's process name doesn't match patterns
 
 **Solutions**:
+
 1. Verify AI tool is running in a separate tmux pane
 2. Check process name with `ps aux | grep claude`
 3. Add custom pattern in setup()
