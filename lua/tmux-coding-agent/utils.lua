@@ -6,6 +6,10 @@ local M = {}
 --- Get visual selection text
 --- @return string|nil Selected text or nil on error
 function M.get_visual_selection()
+  -- Exit visual mode to update '< and '> marks
+  local esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
+  vim.api.nvim_feedkeys(esc, 'nx', false)
+
   local start_pos = vim.fn.getpos("'<")
   local end_pos = vim.fn.getpos("'>")
 
