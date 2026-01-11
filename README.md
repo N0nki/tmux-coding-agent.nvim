@@ -139,35 +139,6 @@ vim.keymap.set('x', '<leader>ar', tmux_ai.send_visual_with_prompt('Please refact
    - Specific tool name → Send only to that tool
 4. **Text sending**: Sends text via `tmux send-keys -l` and executes Enter
 
-## Troubleshooting
-
-### No AI tool panes found
-
-**Symptom**: Error message `No AI tool panes found (claude, codex, gemini)`
-
-**Causes**:
-
-- AI tool is not running in a tmux pane
-- AI tool's process name doesn't match patterns
-
-**Solutions**:
-
-1. Verify AI tool is running in a separate tmux pane
-2. Check process name with `ps aux | grep claude`
-3. Add custom pattern in setup()
-
-### Not running inside tmux
-
-**Symptom**: Error message `Not running inside tmux`
-
-**Solution**: Launch Neovim inside a tmux session
-
-### Selection is empty
-
-**Symptom**: Error message `Selection is empty`
-
-**Solution**: Select text in visual mode before executing
-
 ## License
 
 MIT License - Copyright (c) 2025 n0nki
