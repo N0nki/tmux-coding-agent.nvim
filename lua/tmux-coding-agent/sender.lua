@@ -51,6 +51,8 @@ local function select_and_send(ai_panes, text, tool_name)
 
   -- Select from multiple AI tool panes
   local choices = {}
+  -- Add "All" option at the beginning
+  table.insert(choices, 'All - Send to all AI tools')
   for i, pane in ipairs(ai_panes) do
     table.insert(choices, string.format('%d. %s (pane %s)', i, pane.name, pane.index))
   end
@@ -59,7 +61,16 @@ local function select_and_send(ai_panes, text, tool_name)
     prompt = 'Select AI tool to send to:',
   }, function(choice, idx)
     if idx then
-      M.send_text_to_pane(ai_panes[idx].index, text, ai_panes[idx].name)
+      if idx == 1 then
+        -- "All" selected: send to all panes
+        for _, pane in ipairs(ai_panes) do
+          M.send_text_to_pane(pane.index, text, pane.name)
+        end
+        notify(string.format('Sent text to all %d AI tools', #ai_panes))
+      else
+        -- Individual pane selected (adjust index for "All" offset)
+        M.send_text_to_pane(ai_panes[idx - 1].index, text, ai_panes[idx - 1].name)
+      end
     end
   end)
 end
