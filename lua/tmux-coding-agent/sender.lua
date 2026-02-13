@@ -26,7 +26,6 @@ function M.send_text_to_pane(pane_idx, text, tool_name)
 
   vim.fn.system(string.format('tmux send-keys -t %s Enter', pane_idx))
 
-  notify(string.format('Sent text to %s (pane %s)', tool_name, pane_idx))
 end
 
 --- Select target pane from multiple AI panes
@@ -66,7 +65,6 @@ local function select_and_send(ai_panes, text, tool_name)
         for _, pane in ipairs(ai_panes) do
           M.send_text_to_pane(pane.index, text, pane.name)
         end
-        notify(string.format('Sent text to all %d AI tools', #ai_panes))
       else
         -- Individual pane selected (adjust index for "All" offset)
         M.send_text_to_pane(ai_panes[idx - 1].index, text, ai_panes[idx - 1].name)
@@ -89,13 +87,6 @@ function M.send_to_ai(text, tool_name)
     notify(err, vim.log.levels.WARN)
     return
   end
-
-  -- Display debug information
-  local debug_msg = string.format('Detected AI tools: %d', #ai_panes)
-  for i, pane in ipairs(ai_panes) do
-    debug_msg = debug_msg .. string.format('\n  %d. %s (pane %s)', i, pane.name, pane.index)
-  end
-  notify(debug_msg, vim.log.levels.INFO)
 
   select_and_send(ai_panes, text, tool_name)
 end
