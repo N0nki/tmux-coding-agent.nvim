@@ -25,7 +25,6 @@ function M.send_text_to_pane(pane_idx, text, tool_name)
   vim.fn.system(cmd)
 
   vim.fn.system(string.format('tmux send-keys -t %s Enter', pane_idx))
-
 end
 
 --- Select target pane from multiple AI panes
