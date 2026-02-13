@@ -54,7 +54,7 @@ local function select_and_send(ai_panes, text, tool_name)
   -- Add "All" option at the beginning
   table.insert(choices, 'All - Send to all AI tools')
   for i, pane in ipairs(ai_panes) do
-    table.insert(choices, string.format('%d. %s (pane %s)', i, pane.name, pane.index))
+    table.insert(choices, string.format('%s (pane %s)', pane.name, pane.index))
   end
 
   vim.ui.select(choices, {
